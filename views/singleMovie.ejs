@@ -1,0 +1,78 @@
+<% include head %>
+    </head>
+
+    <body>
+        <% include navbar %>
+            <div class="container">
+                <div class="d-flex justify-content-center">
+                    <div class="col-sm-8 col-sm-offset-2 text-center">
+                        <h1 class="single-movie-title" style="color: black;">
+                            <%= data.title %>
+                        </h1>
+
+                        <h3 class="single-movie-title" style="color: black;">
+                            <%= data.tagline %>
+                        </h3>
+
+                        <a href="<%= data.homepage %>"><img style="padding: 25px;" src="<%= imageBaseUrl + data.poster_path %>" /></a>
+
+                        <h2 class="overview-header">Movie Synopsis: </h2>
+                        <p style="color: black">
+                            <%= data.overview %>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button trigger modal -->
+            <div class="col-sm-12 text-center">
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+		More Details
+	</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content d-flex justify-content-center">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+                            <h4 class="modal-title single-movie-title" id="myModalLabel" style="margin-right : auto">Movie Information</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p><b>Genre - </b>
+                                <% for (genre of data.genres) {  %>
+                                    <%= genre.name %>
+                                        <% } %>
+                            </p>
+
+                            <p> <b>Release Date - </b>
+                                <%= data.release_date %>
+                            </p>
+                            <p> <b>Revenue - </b>
+                                <%= data.revenue %>
+                            </p>
+                            <p> <b>Rating -</b>
+                                <%= data.vote_average %>
+                            </p>
+                            <p> <b>Production Company -</b>
+                                <% for (company of data.production_companies) { %>
+                                    <li>
+                                        <%= company.name %>
+                                    </li>
+                                    <% } %>
+                            </p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </body>
+
+    </html>
