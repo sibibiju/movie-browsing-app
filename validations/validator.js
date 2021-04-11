@@ -1,11 +1,4 @@
-const { body, validationResult } = require('express-validator');
-
-const searchRules = () => {
-    return [
-        body('movieSearch').notEmpty().isString().isLength({ min: 2 }),
-        body('category').notEmpty().isIn(["movie", "person"])
-    ];
-}
+const { validationResult } = require('express-validator');
 
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -23,8 +16,4 @@ const validate = (req, res, next) => {
     });
 }
 
-
-module.exports = {
-    searchRules,
-    validate
-}
+module.exports = validate;

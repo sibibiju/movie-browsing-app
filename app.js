@@ -9,7 +9,8 @@ const passport = require('passport');
 
 const app = express();
 const indexRouter = require('./routes/index');
-const githubAuth = require('./services/githubStrategy');
+const githubAuth = require('./services/githubStrategy.service');
+const config = require('./config/config');
 
 app.use(helmet({
     "contentSecurityPolicy": false
@@ -41,7 +42,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    let message = (req.app.get('env') === 'development') && err.message ? err.message : "something went wrong";
+    let message = (config.env === 'development') && err.message ? err.message : "something went wrong";
     res.status(500).json({ error: true, message: message })
 });
 

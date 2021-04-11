@@ -1,8 +1,6 @@
 const passport = require('passport');
 const githubStrategy = require('passport-github2').Strategy;
-
 const githubCredentials = require('../config/githubAuth');
-
 
 passport.serializeUser((user, done) => {
     done(null, user);

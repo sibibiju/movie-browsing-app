@@ -7,47 +7,21 @@
 var app = require('../app');
 var debug = require('debug')('movielist:server');
 var http = require('http');
+const config = require('../config/config');
+const mongoose = require('mongoose');
 
-/**
- * Get port from environment and store in Express.
- */
+app.set('port', config.port);
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+app.listen(config.port);
+app.on('error', onError);
+app.on('listening', onListening);
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-    var port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
-}
+//MongoDB connection
+mongoose.connect(config.mongoose.url, config.mongoose.options)
+    .then(() => {
+        console.log("Connected to MongoDB");
+    })
+    .catch(e => console.log("Mongoose connection failed ", e));
 
 /**
  * Event listener for HTTP server "error" event.
@@ -58,9 +32,9 @@ function onError(error) {
         throw error;
     }
 
-    var bind = typeof port === 'string' ?
-        'Pipe ' + port :
-        'Port ' + port;
+    var bind = typeof config.port === 'string' ?
+        'Pipe ' + config.port :
+        'Port ' + config.port;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {

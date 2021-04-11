@@ -41,3 +41,11 @@ a {
     font-size: 24px;
     font-weight: normal;
 }
+
+ul {
+    list-style-type: none;
+}
+
+ul>li {
+    display: inline-block;
+}
