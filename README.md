@@ -20,7 +20,7 @@ This page shows the basic user profile & the movies added to the watchlist. The
 - The app is built using Node.js & Express Framework.
 - Mongoose is used to connect to the database.
 - The application supports Github Oauth login.
-- User details & the movies added to the user's watchlist are stored in the Mongo database.
+- User details & the movies added to the user's watchlist are stored in the MongoDB database.
 - API routes are defined for browsing the movies, searching & getting details of a particular movie. TMDB APIs are used for this purpose.
 
 ## Getting Started
