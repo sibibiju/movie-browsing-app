@@ -1,5 +1,6 @@
 const request = require('request');
-var imdbConfig = require('../config/imdb');
+const imdbConfig = require('../config/imdb');
+const config = require('../config/config');
 
 module.exports = {
     getNowPlayingMovies: (req, res, next) => {
@@ -9,10 +10,14 @@ module.exports = {
                 next(error);
             }
 
+            let isLoggedIn = false;
+            if (req.user !== undefined && req.user !== null) {
+                isLoggedIn = true;
+            }
+
             let data = JSON.parse(movieData);
-            console.log(data);
             //res.status(200).json({ error: false, data: JSON.parse(movieData) });
-            res.render('index', { movies: data.results })
+            res.render('index', { movies: data.results, endpoint: config.endpoint })
         });
     },
 
@@ -20,7 +25,7 @@ module.exports = {
         // params get value from url eg - /movie/:id
         // query is used for query param
         const id = req.params.id;
-        const url = imdbConfig.apiBaseUrl + "/movie/" + id + "?api_key=" + process.env.IBM_API_KEY;
+        const url = imdbConfig.apiBaseUrl + "/movie/" + id + "?api_key=" + imdbConfig.apiKey;
         request.get(url, (error, response, movieData) => {
             if (error) {
                 next(error);
@@ -36,7 +41,7 @@ module.exports = {
         //body is used since the method is POST
         const search = encodeURI(req.body.movieSearch);
         const category = req.body.category;
-        const movieUrl = `${imdbConfig.apiBaseUrl}/search/${category}?query=${search}&api_key=${process.env.IBM_API_KEY}`;
+        const movieUrl = `${imdbConfig.apiBaseUrl}/search/${category}?query=${search}&api_key=${imdbConfig.apiKey}`;
 
         request.get(movieUrl, (error, response, movieData) => {
             if (error) {

@@ -20,15 +20,43 @@
                     <% for (let movie of movies) { %>
                         <div class="col-sm-4 col-md-3 poster">
                             <a href="/movie/<%= movie.id %>"><img src="<%= imageBaseUrl + movie.poster_path %>" /></a>
+                            <button onclick="addToWatchList(this.id)" id="<%= movie.id %>" class="btnAddToWatchlist">Add to Watchlist</button>
+                            <div style="padding-bottom: 20px;"></div>
                         </div>
                         <% } %>
+                            <input id="endpoint" value="<%= endpoint %>" type="hidden">
                 </div>
-
-                <!-- <div class="col-sm-12">
-                 
-                </div> -->
             </div>
         </div>
 </body>
+
+<script>
+    const addToWatchList = async(movie_id) => {
+        try {
+            let endpoint = document.getElementById("endpoint").value;
+            let response = await fetch(endpoint + "/user/watchlist", {
+                method: "PUT",
+                credentials: "same-origin",
+                mode: 'cors',
+                body: JSON.stringify({
+                    movie_id: movie_id
+                }),
+                headers: new Headers({
+                    'content-type': 'application/json'
+                }),
+            });
+
+            console.log("RESPONSE OF ADDING TO WATCHLIST", response);
+
+            if (response.status === 401) {
+                window.location.href = endpoint + "/user/login";
+            } else {
+                document.getElementById(movie_id).innerHTML = "Added";
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+</script>
 
 </html>

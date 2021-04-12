@@ -22,6 +22,7 @@ function normalizePort(val) {
 module.exports = {
     env: process.env.NODE_ENV,
     port: normalizePort(process.env.PORT || '3000'),
+    endpoint: process.env.ENDPOINT,
     mongoose: {
         url: process.env.MONGOOSE_CONNECTION_URL,
         options: {

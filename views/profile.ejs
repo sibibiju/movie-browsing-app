@@ -1,0 +1,41 @@
+<% include head %>
+    </head>
+
+    <body>
+        <% include navbar %>
+
+            <div class="container">
+                <h2 style="text-align:center;  padding-top: 20px; padding-bottom: 20px">User Profile</h2>
+                <div class="card">
+                    <img src="/images/default.png" alt="default.png" style="width:100%">
+                    <h1>
+                        <%= user.displayName %>
+                    </h1>
+                    <p class="title">
+                        <%= user.username %>
+                    </p>
+                    <div style="margin: 24px 0;">
+                        <a href="#"><i class="fa fa-dribbble"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+                        <a href="#"><i class="fa fa-linkedin"></i></a>
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                    </div>
+                    <!-- <p><button>MovieFlix</button></p> -->
+                </div>
+
+                <hr>
+                <h2 style="text-align:center; padding-top: 20px; padding-bottom: 20px;">Your Watchlist</h2>
+
+                <div class="col-sm-12 col-lg-12 row">
+                    <% if (user.watchList !== undefined && user.watchList.length !== 0) { %>
+                        <% for (let movie of user.watchList) { %>
+                            <div class="col-sm-4 col-md-3 poster">
+                                <img src="<%= movie.poster %>" />
+                            </div>
+                            <% } %>
+                                <% } %>
+                </div>
+            </div>
+    </body>
+
+    </html>

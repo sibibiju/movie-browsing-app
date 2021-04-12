@@ -14,9 +14,11 @@ const getUser = (req, res, next) => {
         User.findOne({
                 username: username
             })
+            .populate("watchList")
+            .exec()
             .then(user => {
                 if (user !== null && user.username !== undefined) {
-                    res.status(200).json(user)
+                    res.render('profile', { user: user })
                 } else {
                     User.create({
                             displayName: req.user.displayName,
@@ -26,7 +28,7 @@ const getUser = (req, res, next) => {
                             watchList: []
                         })
                         .then(savedUser => {
-                            res.status(200).json(savedUser)
+                            res.render('profile', { user: savedUser })
                         });
                 }
             })
@@ -37,22 +39,27 @@ const getUser = (req, res, next) => {
 }
 
 const addToWatchList = catchAsync(async(req, res, next) => {
-    let imdbMovieId = req.body.imdbMovieId;
-    let url = imdbConfig.apiBaseUrl + "/movie/" + imdbMovieId + "?api_key=" + process.env.IBM_API_KEY + "&external_source=imdb_id";
+    if (req.user !== undefined && req.user !== null) {
+        let imdbMovieId = req.body.movie_id;
 
-    let data = await axios.get(url);
+        let url = imdbConfig.apiBaseUrl + "/movie/" + imdbMovieId + "?api_key=" + imdbConfig.apiKey + "&external_source=imdb_id";
+        let data = await axios.get(url);
 
-    if (data !== null && data.data !== undefined) {
-        let movieData = data.data;
-        let movie = await movieService.findMovie(movieData.imdb_id);
+        if (data !== null && data.data !== undefined) {
+            let movieData = data.data;
+            let movie = await movieService.findMovie(movieData.imdb_id);
 
-        if (movie === null || movie.imdbMovieId === undefined) {
-            movie = await movieService.addMovie(movieData);
+            if (movie === null || movie.imdbMovieId === undefined) {
+                movie = await movieService.addMovie(movieData);
+            }
+
+            let response = await User.updateOne({ username: req.user.username }, { $addToSet: { watchList: movie._id } })
+            res.status(200).send("OK");
+        } else {
+            res.status(404).json({ "error": "Invalid movie ID" });
         }
-
-        res.send("OK");
     } else {
-        res.status(404).json({ "error": "Invalid movie ID" });
+        res.status(401).json({ "error": "Not authorized" });
     }
 });
 
