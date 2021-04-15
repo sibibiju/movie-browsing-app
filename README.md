@@ -49,7 +49,7 @@ nodemon
 Open in browser - 
 http://127.0.0.1:3000
 
-## Features to be addeed/updated in future - 
+## Features to be added/updated in future - 
 - Logging functionality
 - UI
 - Add 404 error page
