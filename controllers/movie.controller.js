@@ -58,7 +58,7 @@ module.exports = {
                 data.results = data.results[0].known_for;
             }
             //res.status(200).json({ error: false, data: JSON.parse(movieData) });
-            res.render('index', { movies: data.results })
+            res.render('index', { movies: data.results, endpoint: config.endpoint })
         });
     }
 }

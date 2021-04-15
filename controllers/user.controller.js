@@ -8,58 +8,50 @@ let createdAt = Date.now();
 let updatedAt = Date.now();
 
 const getUser = (req, res, next) => {
-    if (req.user !== undefined && req.user.username !== undefined) {
-        let username = req.user.username;
+    let username = req.user.username;
 
-        User.findOne({
-                username: username
-            })
-            .populate("watchList")
-            .exec()
-            .then(user => {
-                if (user !== null && user.username !== undefined) {
-                    res.render('profile', { user: user })
-                } else {
-                    User.create({
-                            displayName: req.user.displayName,
-                            username: req.user.username,
-                            createdAt: createdAt,
-                            updatedAt: updatedAt,
-                            watchList: []
-                        })
-                        .then(savedUser => {
-                            res.render('profile', { user: savedUser })
-                        });
-                }
-            })
-            .catch(e => next(e));
-    } else {
-        throw new Error("Invalid parameters provided for createUser");
-    }
+    User.findOne({
+            username: username
+        })
+        .populate("watchList")
+        .exec()
+        .then(user => {
+            if (user !== null && user.username !== undefined) {
+                res.render('profile', { user: user })
+            } else {
+                User.create({
+                        displayName: req.user.displayName,
+                        username: req.user.username,
+                        createdAt: createdAt,
+                        updatedAt: updatedAt,
+                        watchList: []
+                    })
+                    .then(savedUser => {
+                        res.render('profile', { user: savedUser })
+                    });
+            }
+        })
+        .catch(e => next(e));
 }
 
 const addToWatchList = catchAsync(async(req, res, next) => {
-    if (req.user !== undefined && req.user !== null) {
-        let imdbMovieId = req.body.movie_id;
+    let imdbMovieId = req.body.movie_id;
 
-        let url = imdbConfig.apiBaseUrl + "/movie/" + imdbMovieId + "?api_key=" + imdbConfig.apiKey + "&external_source=imdb_id";
-        let data = await axios.get(url);
+    let url = imdbConfig.apiBaseUrl + "/movie/" + imdbMovieId + "?api_key=" + imdbConfig.apiKey + "&external_source=imdb_id";
+    let data = await axios.get(url);
 
-        if (data !== null && data.data !== undefined) {
-            let movieData = data.data;
-            let movie = await movieService.findMovie(movieData.imdb_id);
+    if (data !== null && data.data !== undefined) {
+        let movieData = data.data;
+        let movie = await movieService.findMovie(movieData.imdb_id);
 
-            if (movie === null || movie.imdbMovieId === undefined) {
-                movie = await movieService.addMovie(movieData);
-            }
-
-            let response = await User.updateOne({ username: req.user.username }, { $addToSet: { watchList: movie._id } })
-            res.status(200).send("OK");
-        } else {
-            res.status(404).json({ "error": "Invalid movie ID" });
+        if (movie === null || movie.imdbMovieId === undefined) {
+            movie = await movieService.addMovie(movieData);
         }
+
+        let response = await User.updateOne({ username: req.user.username }, { $addToSet: { watchList: movie._id } })
+        res.status(200).send("OK");
     } else {
-        res.status(401).json({ "error": "Not authorized" });
+        res.status(404).json({ "error": "Invalid movie ID" });
     }
 });
 

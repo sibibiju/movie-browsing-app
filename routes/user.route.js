@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const userController = require('../controllers/user.controller');
+const authenticate = require('../utils/authentication');
 
-router.get('/', userController.getUser);
+router.get('/', authenticate, userController.getUser);
 router.get('/login', passport.authenticate('github', { scope: ['profile'] }));
 
 //This route is fired when we get code from github. The middleware passport.authenticate uses the code to fetch
@@ -12,6 +13,6 @@ router.get('/auth', passport.authenticate('github', { successRedirect: "/user", 
 router.get('/failed', (req, res, next) => {
     res.send("Failed to login");
 });
-router.put('/watchlist', userController.addToWatchList);
+router.put('/watchlist', authenticate, userController.addToWatchList);
 
 module.exports = router;
